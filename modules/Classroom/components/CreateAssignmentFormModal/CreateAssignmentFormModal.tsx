@@ -23,8 +23,10 @@ import {
   useGetAssignmentDownloadUrlQuery,
   useUpdateAssignmentMutation,
 } from "@/shared/redux/rtk-apis/assignments/assignments.api";
+import { getFileName } from "@/shared/utils/getFileName";
 
 import {
+  acceptedFileTypesString,
   assignmentFormSchema,
   assignmentFormSchemaEdit,
   TAssignmentFormValues,
@@ -191,7 +193,9 @@ const CreateAssignmentFormModal: React.FC<IAssignmentFormModalProps> = ({
                     size="md"
                     label="Upload file"
                     placeholder="Select a file"
-                    value={value?.name || assignment?.fileUrl || ""}
+                    value={
+                      value?.name || (assignment?.fileUrl ? getFileName(assignment.fileUrl) : "")
+                    }
                     onClick={() => document.getElementById("hidden-file-input")?.click()}
                     styles={inputStyles}
                     error={errors.file?.message}
@@ -200,6 +204,7 @@ const CreateAssignmentFormModal: React.FC<IAssignmentFormModalProps> = ({
                   <FileInput
                     id="hidden-file-input"
                     style={{ display: "none" }}
+                    accept={acceptedFileTypesString}
                     onChange={(file) => {
                       handleFileChange(file);
                       onChange(file);

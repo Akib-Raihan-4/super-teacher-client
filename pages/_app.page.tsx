@@ -4,6 +4,7 @@ import { Notifications } from "@mantine/notifications";
 import { Provider as ReduxProvider } from "react-redux";
 
 import AppInitializer from "@/shared/components/wrappers/AppInitializer";
+import AuthGuard from "@/shared/components/wrappers/AuthGuard/AuthGuard";
 import { store } from "@/shared/redux/store";
 import { TCustomAppProps } from "@/shared/typedefs";
 
@@ -42,7 +43,9 @@ export default function App(props: TCustomAppProps) {
         <ModalsProvider>
           <AppInitializer>
             <Notifications />
-            {Component.Guard ? <Component.Guard>{component}</Component.Guard> : component}
+            <AuthGuard>
+              {Component.Guard ? <Component.Guard>{component}</Component.Guard> : component}
+            </AuthGuard>
           </AppInitializer>
         </ModalsProvider>
       </MantineProvider>

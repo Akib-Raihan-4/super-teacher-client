@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { TextInput, Select, PasswordInput, Button, Box, Group, Stack } from "@mantine/core";
 import { useForm, Controller } from "react-hook-form";
 
@@ -24,6 +26,7 @@ export function StudentRegistrationForm({ onSubmit }: IStudentRegistrationFormPr
     handleSubmit,
     watch,
     formState: { errors, isValid },
+    setValue,
     reset,
   } = useForm<TStudentRegistrationFormData>({
     resolver: StudentRegistrationSchemaResolver,
@@ -32,6 +35,14 @@ export function StudentRegistrationForm({ onSubmit }: IStudentRegistrationFormPr
   });
 
   const educationLevel = watch("educationLevel");
+
+  useEffect(() => {
+    setValue("medium", "");
+    setValue("class", "");
+    setValue("degree", undefined);
+    setValue("degreeName", "");
+    setValue("semester", "");
+  }, [educationLevel, setValue]);
 
   const handleReset = () => {
     reset({
@@ -76,6 +87,16 @@ export function StudentRegistrationForm({ onSubmit }: IStudentRegistrationFormPr
                       withAsterisk
                       placeholder="Select your gender"
                       classNames={{ input: styles["input"], label: styles["label"] }}
+                      styles={{
+                        input: {
+                          color: "#333",
+                        },
+                        item: {
+                          "&[data-selected]": {
+                            color: "#333",
+                          },
+                        },
+                      }}
                       data={["Male", "Female"]}
                       error={errors.gender?.message}
                       {...field}
@@ -154,6 +175,16 @@ export function StudentRegistrationForm({ onSubmit }: IStudentRegistrationFormPr
                       withAsterisk
                       placeholder="Select medium"
                       classNames={{ input: styles["input"], label: styles["label"] }}
+                      styles={{
+                        input: {
+                          color: "#333",
+                        },
+                        item: {
+                          "&[data-selected]": {
+                            color: "#333",
+                          },
+                        },
+                      }}
                       data={[
                         { value: "english", label: "English" },
                         { value: "bangla", label: "Bangla" },
@@ -174,6 +205,16 @@ export function StudentRegistrationForm({ onSubmit }: IStudentRegistrationFormPr
                       withAsterisk
                       placeholder="Select degree type"
                       classNames={{ input: styles["input"], label: styles["label"] }}
+                      styles={{
+                        input: {
+                          color: "#333",
+                        },
+                        item: {
+                          "&[data-selected]": {
+                            color: "#333",
+                          },
+                        },
+                      }}
                       data={[
                         { value: "Bachelors", label: "Bachelors" },
                         { value: "Masters", label: "Masters" },
@@ -197,6 +238,16 @@ export function StudentRegistrationForm({ onSubmit }: IStudentRegistrationFormPr
                     withAsterisk
                     placeholder="Select class"
                     classNames={{ input: styles["input"], label: styles["label"] }}
+                    styles={{
+                      input: {
+                        color: "#333",
+                      },
+                      item: {
+                        "&[data-selected]": {
+                          color: "#333",
+                        },
+                      },
+                    }}
                     data={
                       educationLevel === EEducationLevel.SCHOOL
                         ? CLASS_OPTIONS_SCHOOL
@@ -220,6 +271,16 @@ export function StudentRegistrationForm({ onSubmit }: IStudentRegistrationFormPr
                       withAsterisk
                       placeholder="Select degree name"
                       classNames={{ input: styles["input"], label: styles["label"] }}
+                      styles={{
+                        input: {
+                          color: "#333",
+                        },
+                        item: {
+                          "&[data-selected]": {
+                            color: "#333",
+                          },
+                        },
+                      }}
                       data={DEGREE_OPTIONS}
                       error={errors.degreeName?.message}
                       {...field}

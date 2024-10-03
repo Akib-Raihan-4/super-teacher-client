@@ -11,6 +11,22 @@ export const useClassroomFormModalStyles = (theme: MantineTheme) => ({
     label: {
       color: "#61c177",
     },
+    input: {
+      "&[data-selected]": {
+        color: theme.black,
+        "&::placeholder": {
+          color: theme.black,
+        },
+      },
+    },
+    item: {
+      "&[data-selected]": {
+        "&, &:hover": {
+          backgroundColor: theme.colors.gray[2],
+          color: theme.black,
+        },
+      },
+    },
   },
   button: {
     background: "#49b359",

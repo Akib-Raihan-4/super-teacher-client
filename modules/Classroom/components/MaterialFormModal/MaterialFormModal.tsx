@@ -23,11 +23,13 @@ import {
   useUpdateResourceMutation,
   useGetResourceDownloadUrlQuery,
 } from "@/shared/redux/rtk-apis/classworks/classworks.api";
+import { getFileName } from "@/shared/utils/getFileName";
 
 import {
   materialFormSchema,
   TMaterialFormValues,
   editMaterialFormSchema,
+  acceptedFileTypesString,
 } from "./MaterialFormModal.helpers";
 import { IMaterialFormModalProps } from "./MaterialFormModal.interface";
 import { inputStyles } from "./MaterialFormModal.styles";
@@ -183,7 +185,7 @@ const MaterialFormModal: React.FC<IMaterialFormModalProps> = ({
                     size="md"
                     label="Upload file"
                     placeholder="Select a file"
-                    value={value?.name || resource?.fileUrl || ""}
+                    value={value?.name || (resource?.fileUrl ? getFileName(resource.fileUrl) : "")}
                     onClick={() => document.getElementById("hidden-file-input")?.click()}
                     styles={inputStyles}
                     error={errors.file?.message}
@@ -192,6 +194,7 @@ const MaterialFormModal: React.FC<IMaterialFormModalProps> = ({
                   <FileInput
                     id="hidden-file-input"
                     style={{ display: "none" }}
+                    accept={acceptedFileTypesString}
                     onChange={(file) => {
                       handleFileChange(file);
                       onChange(file);

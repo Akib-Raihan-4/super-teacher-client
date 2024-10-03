@@ -15,6 +15,7 @@ export interface AssignmentsResponseDto {
 }
 
 export interface StudentResponseDto {
+  submissionId: number;
   firstName: string;
   lastName: string;
   fileUrl: string;

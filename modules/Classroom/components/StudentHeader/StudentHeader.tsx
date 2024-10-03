@@ -21,8 +21,17 @@ const StudentHeader: React.FC<StudentHeaderProps> = ({ classroomId }) => {
           Students
         </Title>
         {user?.userType === EUserRole.TEACHER && (
-          <ActionIcon onClick={() => setIsModalOpen(true)}>
-            <FaRegPlusSquare color="#4CAF50" />
+          <ActionIcon
+            onClick={() => setIsModalOpen(true)}
+            sx={() => ({
+              color: "#4CAF50",
+              "&:hover": {
+                backgroundColor: "transparent",
+                color: "#2ed12e",
+              },
+            })}
+          >
+            <FaRegPlusSquare />
           </ActionIcon>
         )}
       </Flex>

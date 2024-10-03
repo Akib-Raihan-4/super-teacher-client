@@ -7,6 +7,7 @@ import { ApiError } from "@/modules/Login/containers/LoginContainer.types";
 import { useSubmitAssignmentMutation } from "@/shared/redux/rtk-apis/submissions/submissions.api";
 
 import {
+  acceptedFileTypesString,
   assignmentSubmissionSchema,
   TAssignmentSubmissionValues,
 } from "./SubmitAssignmentModal.helpers";
@@ -88,6 +89,7 @@ const SubmitAssignmentModal: React.FC<IAssignmentSubmissionModalProps> = ({
                 <FileInput
                   id="hidden-file-input"
                   style={{ display: "none" }}
+                  accept={acceptedFileTypesString}
                   onChange={(file) => onChange(file)}
                   {...rest}
                 />

@@ -1,6 +1,6 @@
 import { createStyles } from "@mantine/core";
 
-export const useStyles = createStyles(() => ({
+export const useStyles = createStyles((theme) => ({
   dropdown: {
     overflow: "auto",
   },
@@ -13,5 +13,22 @@ export const useStyles = createStyles(() => ({
   label: {
     color: "#4CAF50",
     fontWeight: 700,
+  },
+
+  select: {
+    "& .mantine-Select-input": {
+      "&[data-selected]": {
+        color: theme.black,
+        "&::placeholder": {
+          color: theme.black,
+        },
+      },
+    },
+    "& .mantine-Select-item[data-selected]": {
+      "&, &:hover": {
+        backgroundColor: theme.colors.gray[2],
+        color: theme.black,
+      },
+    },
   },
 }));

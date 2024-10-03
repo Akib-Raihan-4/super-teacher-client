@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 
 import { notifications } from "@mantine/notifications";
 
+import { useSessionContext } from "@/shared/components/wrappers/AppInitializer/AppInitializerContext";
 import { ACCESS_TOKEN_LOCAL_STORAGE_KEY } from "@/shared/constants/app.constants";
 import { useAppDispatch } from "@/shared/redux/hooks";
 import { setUser } from "@/shared/redux/reducers/user.reducer";
@@ -22,6 +23,7 @@ const TeacherRegistrationContainer: React.FC = () => {
   const [uniqueCodeError, setUniqueCodeError] = useState<UniqueCodeError | null>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const { getMe } = useSessionContext();
 
   const handleSubmit = async (data: TTeacherRegistrationFields) => {
     const registrationData: TTeacherRegistrationFields = {
@@ -38,6 +40,7 @@ const TeacherRegistrationContainer: React.FC = () => {
       };
       dispatch(setUser(user));
       localStorage.setItem(ACCESS_TOKEN_LOCAL_STORAGE_KEY, result.token);
+      await getMe().unwrap();
       notifications.show({
         title: "Success",
         message: "Teacher registration successful!",

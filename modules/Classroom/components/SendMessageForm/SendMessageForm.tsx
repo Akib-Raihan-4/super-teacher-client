@@ -9,6 +9,7 @@ import { FaPaperclip, FaTimes } from "react-icons/fa";
 
 import { useCreateMessageMutation } from "@/shared/redux/rtk-apis/messages/messages.api";
 
+import { acceptedFileTypesString } from "../CreateAssignmentFormModal/CreateAssignmentFormModal.helpers";
 import { SendMessageFormSchema, SendMessageFormValues } from "./SendMessageForm.helpers";
 import { ISendMessageFormProps, ISendMessageFormValues } from "./SendMessageForm.interface";
 
@@ -91,7 +92,7 @@ const SendMessageForm: React.FC<ISendMessageFormProps> = ({ classroomId }) => {
           ref={fileInputRef}
           style={{ display: "none" }}
           onChange={handleFileChange}
-          accept="image/*, .pdf"
+          accept={acceptedFileTypesString}
         />
       </Box>
 

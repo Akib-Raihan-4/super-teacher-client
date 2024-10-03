@@ -47,7 +47,7 @@ const authApi = projectApi.injectEndpoints({
       }),
     }),
 
-    resetPassword: builder.mutation<boolean, { email: string; otp: string; newPassword: string }>({
+    forgetPassword: builder.mutation<boolean, { email: string; otp: string; newPassword: string }>({
       query: (data) => ({
         url: "auth/forget-password",
         method: "POST",
@@ -63,6 +63,6 @@ export const {
   useRegisterStudentMutation,
   useRegisterTeacherMutation,
   useGenerateResetPasswordOtpMutation,
-  useResetPasswordMutation,
+  useForgetPasswordMutation,
   useValidateOtpMutation,
 } = authApi;

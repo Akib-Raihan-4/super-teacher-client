@@ -27,6 +27,7 @@ const StudentUpdateProfileForm: React.FC<IStudentUpdateProfileFormProps> = ({ us
   const { classes } = useStyles();
   const [editUser] = useEditUserMutation();
   const [isFormTouched, setIsFormTouched] = useState(false);
+  const [educationLevelKey, setEducationLevelKey] = useState(0);
 
   const {
     control,
@@ -55,6 +56,7 @@ const StudentUpdateProfileForm: React.FC<IStudentUpdateProfileFormProps> = ({ us
     if (educationLevel !== initialEducationLevel) {
       clearEducationFields();
       setIsFormTouched(true);
+      setEducationLevelKey((prevKey) => prevKey + 1);
     }
   }, [educationLevel, user.student?.educationLevel, setValue]);
 
@@ -87,12 +89,13 @@ const StudentUpdateProfileForm: React.FC<IStudentUpdateProfileFormProps> = ({ us
   const handleReset = () => {
     reset(getDefaultValues(user));
     setIsFormTouched(false);
+    setEducationLevelKey((prevKey) => prevKey + 1);
   };
 
   const renderAdditionalFields = () => {
     if (educationLevel === "school" || educationLevel === "college") {
       return (
-        <>
+        <React.Fragment key={`${educationLevel}-${educationLevelKey}`}>
           <Grid.Col xs={12} sm={6}>
             <Select
               {...inputProps}
@@ -122,13 +125,13 @@ const StudentUpdateProfileForm: React.FC<IStudentUpdateProfileFormProps> = ({ us
               classNames={{ root: classes.select, label: classes.inputLabel }}
             />
           </Grid.Col>
-        </>
+        </React.Fragment>
       );
     }
 
     if (educationLevel === "university") {
       return (
-        <>
+        <React.Fragment key={`${educationLevel}-${educationLevelKey}`}>
           <Grid.Col xs={12} sm={6}>
             <Select
               {...inputProps}
@@ -170,7 +173,7 @@ const StudentUpdateProfileForm: React.FC<IStudentUpdateProfileFormProps> = ({ us
               classNames={{ label: classes.inputLabel }}
             />
           </Grid.Col>
-        </>
+        </React.Fragment>
       );
     }
 

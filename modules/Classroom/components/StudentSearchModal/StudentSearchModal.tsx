@@ -11,6 +11,15 @@ import {
 import { FormValues, StudentSearchModalProps } from "./StudentSearchModal.interface";
 import { useStyles } from "./StudentSearchModal.styles";
 
+const StudentItem = ({ label, email, ...others }: { label: string; email: string }) => (
+  <div {...others}>
+    <Text size="sm">{label}</Text>
+    <Text size="xs" color="dimmed">
+      {email}
+    </Text>
+  </div>
+);
+
 const StudentSearchModal: React.FC<StudentSearchModalProps> = ({
   isOpen,
   onClose,
@@ -24,12 +33,17 @@ const StudentSearchModal: React.FC<StudentSearchModalProps> = ({
     control,
     handleSubmit,
     reset,
-    formState: { errors },
-  } = useForm<FormValues>();
+    formState: { errors, isValid },
+    watch,
+  } = useForm<FormValues>({
+    mode: "onChange",
+  });
 
   const { classes } = useStyles();
 
   const [enrollStudent, { isLoading: isEnrolling }] = useEnrollStudentMutation();
+
+  const selectedStudentId = watch("id");
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -59,6 +73,7 @@ const StudentSearchModal: React.FC<StudentSearchModalProps> = ({
     unenrolledStudents?.map((student) => ({
       label: `${student.user.firstName} ${student.user.lastName}`,
       value: String(student.id),
+      email: student.user.email,
     })) || [];
 
   return (
@@ -71,7 +86,7 @@ const StudentSearchModal: React.FC<StudentSearchModalProps> = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <SimpleGrid>
             <Select
-              label="Type a name"
+              label="Type a name or email"
               placeholder="Pick student"
               data={studentOptions}
               searchable
@@ -82,12 +97,36 @@ const StudentSearchModal: React.FC<StudentSearchModalProps> = ({
               dropdownPosition="bottom"
               withinPortal
               maxDropdownHeight={200}
+              itemComponent={StudentItem}
+              filter={(value, item) =>
+                item.label?.toLowerCase().includes(value.toLowerCase().trim()) ||
+                item["email"]?.toLowerCase().includes(value.toLowerCase().trim())
+              }
               classNames={{
                 dropdown: classes.dropdown,
                 input: classes.input,
                 error: classes.error,
                 label: classes.label,
               }}
+              styles={(theme) => ({
+                input: {
+                  "&[data-selected]": {
+                    color: theme.black,
+                    "&::placeholder": {
+                      color: theme.black,
+                    },
+                  },
+                },
+                item: {
+                  "&[data-selected]": {
+                    "&, &:hover": {
+                      backgroundColor: theme.colors.gray[2],
+                      color: theme.black,
+                    },
+                  },
+                },
+              })}
+              rules={{ required: "Please select a student" }}
             />
           </SimpleGrid>
           {isLoading && (
@@ -103,8 +142,11 @@ const StudentSearchModal: React.FC<StudentSearchModalProps> = ({
               type="submit"
               size="sm"
               color="green"
-              style={{ background: "#4CAF50" }}
-              disabled={isEnrolling}
+              style={{
+                background: isValid ? "#4caf50" : "#f5f5f5",
+                color: isValid ? "white" : "#9e9e9e",
+              }}
+              disabled={isEnrolling || !isValid || !selectedStudentId}
               loading={isEnrolling}
             >
               {!isEnrolling && "Enroll"}

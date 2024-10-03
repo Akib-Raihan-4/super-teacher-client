@@ -9,7 +9,7 @@ import { useUploadMeetLinkMutation } from "@/shared/redux/rtk-apis/classrooms/cl
 
 import { meetlinkSchema, TMeetlinkFormValues } from "./UploadOrEditMeetLinkModal.helpers";
 import { IUploadMeetlinkModalProps } from "./UploadOrEditMeetLinkModal.interface";
-import { inputStyles, formStyles } from "./UploadOrEditMeetLinkModal.styles";
+import { inputStyles } from "./UploadOrEditMeetLinkModal.styles";
 
 const UploadMeetlinkModal: React.FC<IUploadMeetlinkModalProps> = ({
   opened,
@@ -21,10 +21,10 @@ const UploadMeetlinkModal: React.FC<IUploadMeetlinkModalProps> = ({
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<TMeetlinkFormValues>({
     resolver: zodResolver(meetlinkSchema),
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       meetlink: initialValue,
     },
@@ -81,7 +81,15 @@ const UploadMeetlinkModal: React.FC<IUploadMeetlinkModalProps> = ({
           <Button size="sm" color="gray" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button type="submit" size="sm" style={formStyles.submitButton}>
+          <Button
+            type="submit"
+            size="sm"
+            style={{
+              background: isValid ? "#4caf50" : "#f5f5f5",
+              color: isValid ? "white" : "#9e9e9e",
+            }}
+            disabled={!isValid}
+          >
             Submit
           </Button>
         </Group>

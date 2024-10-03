@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { notifications } from "@mantine/notifications";
 
 import RegisterModal from "@/modules/Landing/components/RegisterModal/RegisterModal";
+import { useSessionContext } from "@/shared/components/wrappers/AppInitializer/AppInitializerContext";
 import { ACCESS_TOKEN_LOCAL_STORAGE_KEY } from "@/shared/constants/app.constants";
 import { useAppDispatch } from "@/shared/redux/hooks";
 import { setUser } from "@/shared/redux/reducers/user.reducer";
@@ -25,6 +26,7 @@ export function StudentRegistrationContainer() {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { getMe } = useSessionContext();
 
   const handleSubmit = async (data: TStudentRegistrationFormData) => {
     const registrationData: TStudentRegistrationFields = {
@@ -41,6 +43,7 @@ export function StudentRegistrationContainer() {
       };
       dispatch(setUser(user));
       localStorage.setItem(ACCESS_TOKEN_LOCAL_STORAGE_KEY, result.token);
+      await getMe().unwrap();
       notifications.show({
         title: "Success",
         message: "Registration successful!",

@@ -32,6 +32,7 @@ const submissionApi = projectApi.injectEndpoints({
       providesTags: (_, __, { classroomId }) => [{ type: "Assignments", id: classroomId }],
       transformResponse: (response: IApiSubmissionResponse[]): StudentResponseDto[] =>
         response.map((submission) => ({
+          submissionId: submission.id,
           firstName: submission.student.user.firstName.trim(),
           lastName: submission.student.user.lastName.trim(),
           fileUrl: submission.fileUrl,
@@ -60,6 +61,15 @@ const submissionApi = projectApi.injectEndpoints({
       }),
       invalidatesTags: (_, __, { classroomId }) => [{ type: "Assignments", id: classroomId }],
     }),
+
+    getSubmissionDownloadUrl: builder.query<string, { classroomId: number; submissionId: number }>({
+      query: ({ classroomId, submissionId }) => ({
+        url: `/classrooms/${classroomId}/submissions/${submissionId}/download`,
+        responseHandler: (response) => response.text(),
+      }),
+      providesTags: (_, __, { classroomId }) => [{ type: "Assignments", id: classroomId }],
+      transformResponse: (responseData: string) => responseData,
+    }),
   }),
   overrideExisting: false,
 });
@@ -69,4 +79,5 @@ export const {
   useGetAssignmentSubmissionsQuery,
   useGetSubmissionStatusQuery,
   useDeleteSubmissionMutation,
+  useGetSubmissionDownloadUrlQuery,
 } = submissionApi;

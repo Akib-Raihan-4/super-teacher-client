@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Anchor, Button, Group, Menu, Title } from "@mantine/core";
@@ -38,14 +39,14 @@ const Navbar = () => {
 
   return (
     <Group className={classes.navbar}>
-      <Anchor className={classes.logo}>
+      <Anchor className={classes.logo} component={Link} href="/">
         <Title className={classes.logoTitle} order={4}>
           Superteacher
         </Title>
       </Anchor>
 
       <Group>
-        <Anchor className={classes.dashboardLink}>
+        <Anchor className={classes.dashboardLink} component={Link} href="/dashboard">
           <Title className={classes.dashboardTitle} order={5}>
             Dashboard
           </Title>

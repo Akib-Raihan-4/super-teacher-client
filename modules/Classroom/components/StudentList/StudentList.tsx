@@ -67,8 +67,15 @@ const StudentList: React.FC<StudentListProps> = ({ students, classroomId }) => {
                     });
                     setIsModalOpen(true);
                   }}
+                  sx={(theme) => ({
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "transparent",
+                      color: theme.colors.red[6],
+                    },
+                  })}
                 >
-                  <FaRegTrashAlt color="white" />
+                  <FaRegTrashAlt />
                 </ActionIcon>
               )}
             </Group>

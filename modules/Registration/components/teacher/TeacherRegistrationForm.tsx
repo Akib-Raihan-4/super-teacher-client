@@ -36,7 +36,7 @@ const TeacherRegistrationForm: React.FC<IExtendedTeacherRegistrationFormProps> =
       return errors.uniqueCode.message;
     }
     if (uniqueCodeError) {
-      return `${uniqueCodeError.message}. Remaining: ${uniqueCodeError.remainingUses})`;
+      return `${uniqueCodeError.message}. Remaining: ${uniqueCodeError.remainingUses}`;
     }
     return undefined;
   };

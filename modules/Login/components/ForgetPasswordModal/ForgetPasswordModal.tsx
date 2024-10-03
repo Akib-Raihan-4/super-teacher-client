@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 
 import {
   useGenerateResetPasswordOtpMutation,
-  useResetPasswordMutation,
+  useForgetPasswordMutation,
   useValidateOtpMutation,
 } from "@/shared/redux/rtk-apis/auth/auth.api";
 
@@ -29,7 +29,7 @@ const ForgetPasswordModal: React.FC<IPasswordResetModalProps> = ({ opened, onClo
   const [otp, setOtp] = useState("");
   const [generateOtp, { isLoading: isGeneratingOtp }] = useGenerateResetPasswordOtpMutation();
   const [validateOtp, { isLoading: isValidatingOtp }] = useValidateOtpMutation();
-  const [resetPassword, { isLoading: isResettingPassword }] = useResetPasswordMutation();
+  const [resetPassword, { isLoading: isResettingPassword }] = useForgetPasswordMutation();
 
   const {
     register: registerEmail,

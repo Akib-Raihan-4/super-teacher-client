@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Card, Flex, Text, Group, Button, Menu, ActionIcon } from "@mantine/core";
+import { Card, Flex, Text, Group, Button, Menu, ActionIcon, Loader } from "@mantine/core";
 import dayjs from "dayjs";
 import { AiOutlineFileText } from "react-icons/ai";
 import { FaDownload, FaTrash } from "react-icons/fa";
@@ -9,7 +9,10 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { useAppSelector } from "@/shared/redux/hooks";
 import { selectAuthenticatedUser } from "@/shared/redux/reducers/user.reducer";
 import { useGetAssignmentDownloadUrlQuery } from "@/shared/redux/rtk-apis/assignments/assignments.api";
-import { useGetSubmissionStatusQuery } from "@/shared/redux/rtk-apis/submissions/submissions.api";
+import {
+  useGetSubmissionStatusQuery,
+  useGetSubmissionDownloadUrlQuery,
+} from "@/shared/redux/rtk-apis/submissions/submissions.api";
 
 import ConfirmDeleteAssignmentModal from "../ConfirmDeleteAssignmentModal/ConfirmDeleteAssignmentModal";
 import ConfirmDeleteSubmissionModal from "../ConfirmDeleteSubmissionModal/ConfirmDeleteSubmissionModal";
@@ -28,15 +31,16 @@ const AssignmentCard: React.FC<IAssignmentCardProps> = ({ assignment, classroomI
   const [isDeleteSubmissionModalOpen, setIsDeleteSubmissionModalOpen] = useState(false);
 
   const { classes } = useStyles();
+
   const { data: submissionStatus } = useGetSubmissionStatusQuery(
     { assignmentId: assignment.id, userId: user?.userId ?? 0, classroomId: classroomId },
     { skip: !user || user.userType !== "student" },
   );
 
   const {
-    data: downloadUrl,
-    isFetching,
-    isError,
+    data: assignmentDownloadUrl,
+    isFetching: isFetchingAssignmentDownload,
+    isError: assignmentDownloadError,
   } = useGetAssignmentDownloadUrlQuery(
     { classroomId, assignmentId: assignment.id },
     {
@@ -44,11 +48,26 @@ const AssignmentCard: React.FC<IAssignmentCardProps> = ({ assignment, classroomI
     },
   );
 
-  const handleDownload = () => {
-    if (downloadUrl) {
-      window.open(downloadUrl, "_blank");
+  // For downloading the student's submitted assignment
+  const { data: submissionDownloadUrl, isFetching: isFetchingSubmissionDownload } =
+    useGetSubmissionDownloadUrlQuery(
+      { classroomId, submissionId: submissionStatus?.submissionId ?? 0 },
+      { skip: !submissionStatus?.submissionId },
+    );
+
+  const handleDownloadAssignment = () => {
+    if (assignmentDownloadUrl) {
+      window.open(assignmentDownloadUrl, "_blank");
     } else {
-      console.error("Download URL is undefined");
+      console.error("Download URL for assignment is undefined");
+    }
+  };
+
+  const handleDownloadSubmission = () => {
+    if (submissionDownloadUrl) {
+      window.open(submissionDownloadUrl, "_blank");
+    } else {
+      console.error("Download URL for submission is undefined");
     }
   };
 
@@ -88,9 +107,11 @@ const AssignmentCard: React.FC<IAssignmentCardProps> = ({ assignment, classroomI
             rightIcon={<FaDownload />}
             className={classes.viewButton}
             size="compact-sm"
-            loading={isFetching}
-            onClick={handleDownload}
-            disabled={isError || (!downloadUrl && !isFetching)}
+            loading={isFetchingAssignmentDownload}
+            onClick={handleDownloadAssignment}
+            disabled={
+              assignmentDownloadError || (!assignmentDownloadUrl && !isFetchingAssignmentDownload)
+            }
           >
             Download
           </Button>
@@ -103,6 +124,7 @@ const AssignmentCard: React.FC<IAssignmentCardProps> = ({ assignment, classroomI
               {dayjs(assignment.dueDate).format("MMMM D, YYYY")}
             </Text>
           </Text>
+
           {user?.userType === "teacher" ? (
             <Button
               className={classes.submissionButton}
@@ -111,16 +133,32 @@ const AssignmentCard: React.FC<IAssignmentCardProps> = ({ assignment, classroomI
               Submissions
             </Button>
           ) : submissionStatus?.submitted ? (
-            <Group>
-              <Button className={classes.submissionButton} disabled>
-                Submitted
-              </Button>
-              {submissionStatus.submissionId && (
-                <ActionIcon color="red" onClick={() => setIsDeleteSubmissionModalOpen(true)}>
-                  <FaTrash />
-                </ActionIcon>
-              )}
-            </Group>
+            <Menu shadow="md" withArrow withinPortal offset={-3} position="bottom-end">
+              <Menu.Target>
+                <Button
+                  className={classes.submissionButton}
+                  disabled={isFetchingSubmissionDownload}
+                >
+                  Submitted
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  icon={isFetchingSubmissionDownload ? <Loader size="xs" /> : <FaDownload />}
+                  onClick={handleDownloadSubmission}
+                  disabled={isFetchingSubmissionDownload}
+                >
+                  Download Submission
+                </Menu.Item>
+                <Menu.Item
+                  color="red"
+                  icon={<FaTrash />}
+                  onClick={() => setIsDeleteSubmissionModalOpen(true)}
+                >
+                  Delete Submission
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           ) : (
             <Button className={classes.submitButton} onClick={() => setIsSubmitModalOpen(true)}>
               Submit
@@ -169,5 +207,4 @@ const AssignmentCard: React.FC<IAssignmentCardProps> = ({ assignment, classroomI
     </>
   );
 };
-
 export default AssignmentCard;
